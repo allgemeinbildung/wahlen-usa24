@@ -1,3 +1,4 @@
+/* General Styles */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -25,6 +26,48 @@ h2, h3 {
   padding-bottom: 10px;
 }
 
+/* Tables Container */
+.tables-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+/* Table Wrapper */
+.table-wrapper {
+  flex: 1 1 300px;
+  max-width: 500px;
+}
+
+/* States Tables */
+.states-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.states-table th, .states-table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: left;
+}
+
+.states-table th {
+  background-color: #f2f2f2;
+}
+
+.dem-table th, .dem-table td {
+  background-color: #d1e7dd;
+  border-color: #0f5132;
+}
+
+.rep-table th, .rep-table td {
+  background-color: #f8d7da;
+  border-color: #842029;
+}
+
+/* Swing States */
 .state-list {
   display: flex;
   flex-wrap: wrap;
@@ -65,6 +108,7 @@ h2, h3 {
   border-color: #842029;
 }
 
+/* Totals Container */
 .totals-container {
   display: flex;
   justify-content: space-around;
@@ -82,6 +126,7 @@ h2, h3 {
 
 /* Electoral College Bar Styling */
 #electoral-college-bar {
+  position: relative;
   width: 100%;
   height: 30px;
   background-color: #e0e0e0;
@@ -99,14 +144,84 @@ h2, h3 {
 
 .dem-bar {
   background-color: #0f5132;
-  width: 0%; /* Will be set dynamically */
+  width: 0%;
+  position: relative;
 }
 
 .rep-bar {
   background-color: #842029;
-  width: 0%; /* Will be set dynamically */
+  width: 0%;
+  position: relative;
 }
 
+#bar-labels {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 10px;
+  pointer-events: none;
+}
+
+#bar-labels span {
+  font-size: 0.8em;
+  color: #fff;
+  text-shadow: 1px 1px 2px #000;
+}
+
+/* Winner Display */
+.winner-display {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.winner-display.hidden {
+  display: none;
+}
+
+.winner-display h3 {
+  color: gold;
+  font-size: 1.5em;
+  text-shadow: 2px 2px 4px #000;
+}
+
+/* Victory Indicator Styling */
+.bar.victory::before {
+  content: '🏆';
+  position: absolute;
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.2em;
+}
+
+/* Tooltip Styling */
+.bar:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  background-color: rgba(0,0,0,0.7);
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 3px;
+  top: -35px;
+  white-space: nowrap;
+  font-size: 0.8em;
+  transform: translateX(-50%);
+  left: 50%;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.bar:hover::after {
+  opacity: 1;
+}
+
+/* Reset Button */
 #reset-button {
   margin-top: 20px;
   padding: 10px 20px;
@@ -120,6 +235,14 @@ h2, h3 {
 
 #reset-button:hover {
   background-color: #0b5ed7;
+}
+
+/* Responsive Design */
+@media (max-width: 800px) {
+  .tables-container {
+    flex-direction: column;
+    align-items: center;
+  }
 }
 
 @media (max-width: 600px) {
