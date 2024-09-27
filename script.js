@@ -21,7 +21,6 @@ const staticVotes = {
   rep: {
     // Add all Republican static states and their electoral votes
     'Texas': 38,
-    'Florida': 30,
     'Ohio': 18,
     'Indiana': 11,
     'Tennessee': 11,
@@ -36,8 +35,8 @@ const staticVotes = {
     'Wyoming': 3,
     'South Carolina': 9,
     'Louisiana': 8,
-    'Alaska': 3,
-    'Arizona': 11 // Note: Arizona is a swing state; adjust accordingly
+    'Alaska': 3
+    // Ensure Arizona is not listed here as it's a swing state
     // Add other Republican static states if any
   }
 };
@@ -49,7 +48,7 @@ const swingStates = [
   { name: 'Georgia', votes: 16, assigned: null },
   { name: 'Michigan', votes: 15, assigned: null },
   { name: 'North Carolina', votes: 16, assigned: null },
-  { name: 'Arizona', votes: 11, assigned: null }, // Ensure it's not in static
+  { name: 'Arizona', votes: 11, assigned: null },
   { name: 'Wisconsin', votes: 10, assigned: null },
   { name: 'Florida', votes: 30, assigned: null },
   { name: 'Minnesota', votes: 10, assigned: null },
@@ -74,7 +73,7 @@ function calculateStaticTotals() {
   }
 }
 
-// Function to update totals
+// Function to update totals and the electoral college bar
 function updateTotals() {
   // Reset swing totals
   let swingDem = 0;
@@ -88,8 +87,24 @@ function updateTotals() {
     }
   });
 
-  document.getElementById('dem-total').innerText = totalDem + swingDem;
-  document.getElementById('rep-total').innerText = totalRep + swingRep;
+  // Calculate total votes
+  const currentDemTotal = totalDem + swingDem;
+  const currentRepTotal = totalRep + swingRep;
+
+  // Update DOM
+  document.getElementById('dem-total').innerText = currentDemTotal;
+  document.getElementById('rep-total').innerText = currentRepTotal;
+
+  // Update Electoral College Bar
+  const totalVotes = 538;
+  const demPercentage = (currentDemTotal / totalVotes) * 100;
+  const repPercentage = (currentRepTotal / totalVotes) * 100;
+
+  document.getElementById('dem-bar').style.width = `${demPercentage}%`;
+  document.getElementById('rep-bar').style.width = `${repPercentage}%`;
+
+  // Optional: Handle cases where percentages exceed 100%
+  // This can occur if the static and swing votes do not sum to 538
 }
 
 // Function to handle swing state click
