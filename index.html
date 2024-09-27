@@ -14,13 +14,43 @@
   <main>
     <section id="static-states">
       <h2>Static States</h2>
+      <h3>Democratic States</h3>
       <div class="state-list">
         <div class="state dem">California (55)</div>
         <div class="state dem">New York (29)</div>
-        <!-- Add all Democratic static states here -->
+        <div class="state dem">Illinois (20)</div>
+        <div class="state dem">Massachusetts (11)</div>
+        <div class="state dem">Maryland (10)</div>
+        <div class="state dem">Washington (12)</div>
+        <div class="state dem">Oregon (7)</div>
+        <div class="state dem">New Jersey (14)</div>
+        <div class="state dem">Connecticut (7)</div>
+        <div class="state dem">Rhode Island (4)</div>
+        <div class="state dem">Delaware (3)</div>
+        <div class="state dem">Vermont (3)</div>
+        <div class="state dem">Hawaii (4)</div>
+        <div class="state dem">District of Columbia (3)</div>
+        <!-- Add other Democratic static states here -->
+      </div>
+      <h3>Republican States</h3>
+      <div class="state-list">
         <div class="state rep">Texas (38)</div>
-        <div class="state rep">Florida (30)</div>
-        <!-- Add all Republican static states here -->
+        <div class="state rep">Ohio (18)</div>
+        <div class="state rep">Indiana (11)</div>
+        <div class="state rep">Tennessee (11)</div>
+        <div class="state rep">Alabama (9)</div>
+        <div class="state rep">Missouri (10)</div>
+        <div class="state rep">Kentucky (8)</div>
+        <div class="state rep">Oklahoma (7)</div>
+        <div class="state rep">Utah (6)</div>
+        <div class="state rep">Kansas (6)</div>
+        <div class="state rep">Nebraska (5)</div>
+        <div class="state rep">Idaho (4)</div>
+        <div class="state rep">Wyoming (3)</div>
+        <div class="state rep">South Carolina (9)</div>
+        <div class="state rep">Louisiana (8)</div>
+        <div class="state rep">Alaska (3)</div>
+        <!-- Add other Republican static states here -->
       </div>
     </section>
 
@@ -48,7 +78,14 @@
         <div class="total dem">Democrats: <span id="dem-total">0</span></div>
         <div class="total rep">Republicans: <span id="rep-total">0</span></div>
       </div>
-        <button id="reset-button">Reset Swing States</button>
+      
+      <!-- Electoral College Bar -->
+      <div id="electoral-college-bar">
+        <div id="dem-bar" class="bar dem-bar"></div>
+        <div id="rep-bar" class="bar rep-bar"></div>
+      </div>
+      
+      <button id="reset-button">Reset Swing States</button>
     </section>
   </main>
 
