@@ -16,7 +16,9 @@ const staticVotes = {
     'Vermont': 3,
     'Hawaii': 4,
     'District of Columbia': 3
-    // Add other Democratic static states if any
+    'Colorado': 10,
+    'Virginia': 13,
+    'Minnesota': 10,
   },
   rep: {
     // Republican static states and their electoral votes
@@ -36,7 +38,13 @@ const staticVotes = {
     'South Carolina': 9,
     'Louisiana': 8,
     'Alaska': 3
-    // Ensure Arizona is not listed here as it's a swing state
+    'Mississippi': 6,
+    'Iowa': 6,
+    'North Dakota': 3,
+    'South Dakota': 3,
+    'Montana': 4,
+    'Arkansas': 6,
+    'West Virginia': 4,
     // Add other Republican static states if any
   }
 };
