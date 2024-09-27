@@ -20,7 +20,7 @@ section {
   margin-bottom: 30px;
 }
 
-h2 {
+h2, h3 {
   border-bottom: 2px solid #333;
   padding-bottom: 10px;
 }
@@ -69,6 +69,7 @@ h2 {
   display: flex;
   justify-content: space-around;
   font-size: 1.2em;
+  margin-bottom: 20px;
 }
 
 .total.dem {
@@ -77,4 +78,65 @@ h2 {
 
 .total.rep {
   color: #842029;
+}
+
+/* Electoral College Bar Styling */
+#electoral-college-bar {
+  width: 100%;
+  height: 30px;
+  background-color: #e0e0e0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  display: flex;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.bar {
+  height: 100%;
+  transition: width 0.3s;
+}
+
+.dem-bar {
+  background-color: #0f5132;
+  width: 0%; /* Will be set dynamically */
+}
+
+.rep-bar {
+  background-color: #842029;
+  width: 0%; /* Will be set dynamically */
+}
+
+#reset-button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #0d6efd;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+#reset-button:hover {
+  background-color: #0b5ed7;
+}
+
+@media (max-width: 600px) {
+  .state-list {
+    flex-direction: column;
+  }
+
+  .totals-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #reset-button {
+    width: 100%;
+  }
+
+  #electoral-college-bar {
+    height: 25px;
+  }
 }
