@@ -8,18 +8,15 @@
 <body>
     <h1>Wahlkarte der USA</h1>
     <div id="map-container">
-        <!-- Reference to external SVG file -->
-        <object id="us-map" type="image/svg+xml" data="usa-labels-boxes.svg"></object>
+        <!-- Changed from object to img tag -->
+        <img id="us-map" src="usa-labels-boxes.svg" alt="USA Map">
     </div>
-
     <div id="results">
         <p>Republikaner Stimmen: <span id="republicanVotes">0</span></p>
         <p>Demokraten Stimmen: <span id="democratVotes">0</span></p>
         <p id="winner">Noch kein Gewinner</p>
     </div>
-
     <div class="tooltip"></div>
-
     <script src="script.js"></script>
 </body>
 </html>
