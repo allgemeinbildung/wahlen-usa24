@@ -4,7 +4,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     svgObject.onload = function() {
         const svgDoc = svgObject.contentDocument; // Get the SVG document inside the object tag
-        const states = svgDoc.querySelectorAll('.state');
+        const interactiveStates = [
+            'state-PA', 'state-NV', 'state-GA', 'state-MI', 
+            'state-NC', 'state-AZ', 'state-WI', 'state-FL', 
+            'state-MN', 'state-NM', 'state-VA', 'state-NH'
+        ];
+
         const republicanVotesEl = document.getElementById('republicanVotes');
         const democratVotesEl = document.getElementById('democratVotes');
         const winnerEl = document.getElementById('winner');
@@ -13,27 +18,30 @@ document.addEventListener('DOMContentLoaded', () => {
         let republicanTotal = 0;
         let democratTotal = 0;
 
-        states.forEach(state => {
-            state.addEventListener('click', () => {
-                toggleState(state);
-                calculateResults();
-            });
+        interactiveStates.forEach(id => {
+            const state = svgDoc.getElementById(id);
+            if (state) {
+                state.addEventListener('click', () => {
+                    toggleState(state);
+                    calculateResults();
+                });
 
-            state.addEventListener('mouseenter', () => {
-                const name = state.getAttribute('data-name');
-                const votes = state.getAttribute('data-votes');
-                tooltip.innerHTML = `${name}: ${votes} Wahlleute`;
-                tooltip.style.display = 'block';
-            });
+                state.addEventListener('mouseenter', () => {
+                    const name = state.getAttribute('data-name');
+                    const votes = state.getAttribute('data-votes');
+                    tooltip.innerHTML = `${name}: ${votes} Wahlleute`;
+                    tooltip.style.display = 'block';
+                });
 
-            state.addEventListener('mousemove', (e) => {
-                tooltip.style.left = e.pageX + 10 + 'px';
-                tooltip.style.top = e.pageY + 10 + 'px';
-            });
+                state.addEventListener('mousemove', (e) => {
+                    tooltip.style.left = e.pageX + 10 + 'px';
+                    tooltip.style.top = e.pageY + 10 + 'px';
+                });
 
-            state.addEventListener('mouseleave', () => {
-                tooltip.style.display = 'none';
-            });
+                state.addEventListener('mouseleave', () => {
+                    tooltip.style.display = 'none';
+                });
+            }
         });
 
         function toggleState(state) {
@@ -65,12 +73,12 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Optional: Initialize some states with default values
+        // Optionally initialize some states
         initializeStates();
 
         function initializeStates() {
-            const initialRepublicans = ['state-TX', 'state-FL'];
-            const initialDemocrats = ['state-CA', 'state-NY'];
+            const initialRepublicans = ['state-FL'];
+            const initialDemocrats = ['state-PA'];
 
             initialRepublicans.forEach(id => {
                 const state = svgDoc.getElementById(id);
