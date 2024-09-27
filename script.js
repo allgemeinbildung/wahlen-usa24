@@ -15,10 +15,10 @@ const staticVotes = {
     'Delaware': 3,
     'Vermont': 3,
     'Hawaii': 4,
-    'District of Columbia': 3
+    'District of Columbia': 3,
     'Colorado': 10,
     'Virginia': 13,
-    'Minnesota': 10,
+    'Minnesota': 10
   },
   rep: {
     // Republican static states and their electoral votes
@@ -37,14 +37,14 @@ const staticVotes = {
     'Wyoming': 3,
     'South Carolina': 9,
     'Louisiana': 8,
-    'Alaska': 3
+    'Alaska': 3,
     'Mississippi': 6,
     'Iowa': 6,
     'North Dakota': 3,
     'South Dakota': 3,
     'Montana': 4,
     'Arkansas': 6,
-    'West Virginia': 4,
+    'West Virginia': 4
     // Add other Republican static states if any
   }
 };
