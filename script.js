@@ -1,105 +1,148 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const republicanVotesEl = document.getElementById('republicanVotes');
-    const democratVotesEl = document.getElementById('democratVotes');
-    const winnerEl = document.getElementById('winner');
-    const tooltip = document.querySelector('.tooltip');
-    let republicanTotal = 0;
-    let democratTotal = 0;
+// Static electoral votes
+const staticVotes = {
+  dem: {
+    // Add all Democratic static states and their electoral votes
+    'California': 55,
+    'New York': 29,
+    'Illinois': 20,
+    'Massachusetts': 11,
+    'Maryland': 10,
+    'Washington': 12,
+    'Oregon': 7,
+    'New Jersey': 14,
+    'Connecticut': 7,
+    'Rhode Island': 4,
+    'Delaware': 3,
+    'Vermont': 3,
+    'Hawaii': 4,
+    'District of Columbia': 3
+    // Add other Democratic static states if any
+  },
+  rep: {
+    // Add all Republican static states and their electoral votes
+    'Texas': 38,
+    'Florida': 30,
+    'Ohio': 18,
+    'Indiana': 11,
+    'Tennessee': 11,
+    'Alabama': 9,
+    'Missouri': 10,
+    'Kentucky': 8,
+    'Oklahoma': 7,
+    'Utah': 6,
+    'Kansas': 6,
+    'Nebraska': 5,
+    'Idaho': 4,
+    'Wyoming': 3,
+    'South Carolina': 9,
+    'Louisiana': 8,
+    'Alaska': 3,
+    'Arizona': 11 // Note: Arizona is a swing state; adjust accordingly
+    // Add other Republican static states if any
+  }
+};
 
-    // List of interactive state IDs
-    const interactiveStates = [
-        'state-PA', // Pennsylvania (19)
-        'state-NV', // Nevada (6)
-        'state-GA', // Georgia (16)
-        'state-MI', // Michigan (15)
-        'state-NC', // North Carolina (16)
-        'state-AZ', // Arizona (11)
-        'state-WI', // Wisconsin (10)
-        'state-FL', // Florida (30)
-        'state-MN', // Minnesota (10)
-        'state-NM', // New Mexico (5)
-        'state-VA', // Virginia (13)
-        'state-NH'  // New Hampshire (4)
-    ];
+// Swing states data
+const swingStates = [
+  { name: 'Pennsylvania', votes: 19, assigned: null },
+  { name: 'Nevada', votes: 6, assigned: null },
+  { name: 'Georgia', votes: 16, assigned: null },
+  { name: 'Michigan', votes: 15, assigned: null },
+  { name: 'North Carolina', votes: 16, assigned: null },
+  { name: 'Arizona', votes: 11, assigned: null }, // Ensure it's not in static
+  { name: 'Wisconsin', votes: 10, assigned: null },
+  { name: 'Florida', votes: 30, assigned: null },
+  { name: 'Minnesota', votes: 10, assigned: null },
+  { name: 'New Mexico', votes: 5, assigned: null },
+  { name: 'Virginia', votes: 13, assigned: null },
+  { name: 'New Hampshire', votes: 4, assigned: null },
+];
 
-    // Attach event listeners to interactive states
-    interactiveStates.forEach(id => {
-        const state = document.getElementById(id);
-        if (state) {
-            state.addEventListener('click', () => {
-                toggleState(state);
-                calculateResults();
-            });
-            state.addEventListener('mouseenter', () => {
-                const name = state.getAttribute('data-name');
-                const votes = state.getAttribute('data-votes');
-                tooltip.innerHTML = `${name}: ${votes} Wahlleute`;
-                tooltip.style.display = 'block';
-            });
-            state.addEventListener('mousemove', (e) => {
-                tooltip.style.left = e.pageX + 10 + 'px';
-                tooltip.style.top = e.pageY + 10 + 'px';
-            });
-            state.addEventListener('mouseleave', () => {
-                tooltip.style.display = 'none';
-            });
-        }
-    });
+// Initialize totals
+let totalDem = 0;
+let totalRep = 0;
 
-    // Function to toggle state between Republican and Democrat
-    function toggleState(state) {
-        const votes = parseInt(state.getAttribute('data-votes'));
-        if (state.classList.contains('republican')) {
-            state.classList.remove('republican');
-            state.classList.add('democrat');
-            republicanTotal -= votes;
-            democratTotal += votes;
-        } else if (state.classList.contains('democrat')) {
-            state.classList.remove('democrat');
-            republicanTotal -= votes;
-        } else {
-            state.classList.add('republican');
-            republicanTotal += votes;
-        }
+// Function to calculate static totals
+function calculateStaticTotals() {
+  totalDem = 0;
+  totalRep = 0;
+  for (let state in staticVotes.dem) {
+    totalDem += staticVotes.dem[state];
+  }
+  for (let state in staticVotes.rep) {
+    totalRep += staticVotes.rep[state];
+  }
+}
+
+// Function to update totals
+function updateTotals() {
+  // Reset swing totals
+  let swingDem = 0;
+  let swingRep = 0;
+
+  swingStates.forEach(state => {
+    if (state.assigned === 'dem') {
+      swingDem += state.votes;
+    } else if (state.assigned === 'rep') {
+      swingRep += state.votes;
     }
+  });
 
-    // Function to calculate and display results
-    function calculateResults() {
-        republicanVotesEl.textContent = republicanTotal;
-        democratVotesEl.textContent = democratTotal;
-        if (republicanTotal >= 270) {
-            winnerEl.textContent = 'Aktueller Gewinner: Republikaner';
-        } else if (democratTotal >= 270) {
-            winnerEl.textContent = 'Aktueller Gewinner: Demokraten';
-        } else {
-            winnerEl.textContent = 'Noch kein Gewinner';
-        }
-    }
+  document.getElementById('dem-total').innerText = totalDem + swingDem;
+  document.getElementById('rep-total').innerText = totalRep + swingRep;
+}
 
-    // Initialize states with initial assignments
-    function initializeStates() {
-        // Define initial Republican and Democrat states
-        const initialRepublicans = ['state-FL']; // Florida initially Republican
-        const initialDemocrats = ['state-PA'];    // Pennsylvania initially Democrat
+// Function to handle swing state click
+function handleSwingStateClick(event) {
+  const stateElement = event.target;
+  const stateName = stateElement.textContent.split(' (')[0];
+  const state = swingStates.find(s => s.name === stateName);
 
-        initialRepublicans.forEach(id => {
-            const state = document.getElementById(id);
-            if (state) {
-                state.classList.add('republican');
-                republicanTotal += parseInt(state.getAttribute('data-votes'));
-            }
-        });
+  if (!state) return;
 
-        initialDemocrats.forEach(id => {
-            const state = document.getElementById(id);
-            if (state) {
-                state.classList.add('democrat');
-                democratTotal += parseInt(state.getAttribute('data-votes'));
-            }
-        });
+  // Toggle assignment
+  if (state.assigned === 'dem') {
+    state.assigned = 'rep';
+    stateElement.classList.remove('selected-dem');
+    stateElement.classList.add('selected-rep');
+  } else if (state.assigned === 'rep') {
+    state.assigned = null;
+    stateElement.classList.remove('selected-rep');
+  } else {
+    state.assigned = 'dem';
+    stateElement.classList.add('selected-dem');
+  }
 
-        calculateResults();
-    }
+  updateTotals();
+}
 
-    initializeStates();
-});
+// Function to reset all swing states
+function resetSwingStates() {
+  swingStates.forEach(state => {
+    state.assigned = null;
+    const stateElement = document.querySelector(`.swing-state:nth-child(${swingStates.indexOf(state) + 1})`);
+    stateElement.classList.remove('selected-dem', 'selected-rep');
+  });
+  updateTotals();
+}
+
+// Initialize the application
+function init() {
+  calculateStaticTotals();
+  updateTotals();
+
+  // Add event listeners to swing states
+  const swingElements = document.querySelectorAll('.swing-state');
+  swingElements.forEach(element => {
+    element.addEventListener('click', handleSwingStateClick);
+  });
+
+  // Add event listener to reset button
+  const resetButton = document.getElementById('reset-button');
+  if (resetButton) {
+    resetButton.addEventListener('click', resetSwingStates);
+  }
+}
+
+// Run init on page load
+window.onload = init;
