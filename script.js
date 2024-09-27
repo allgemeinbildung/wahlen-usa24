@@ -1,7 +1,7 @@
 // Static electoral votes
 const staticVotes = {
   dem: {
-    // Add all Democratic static states and their electoral votes
+    // Democratic static states and their electoral votes
     'California': 55,
     'New York': 29,
     'Illinois': 20,
@@ -19,7 +19,7 @@ const staticVotes = {
     // Add other Democratic static states if any
   },
   rep: {
-    // Add all Republican static states and their electoral votes
+    // Republican static states and their electoral votes
     'Texas': 38,
     'Ohio': 18,
     'Indiana': 11,
@@ -91,20 +91,63 @@ function updateTotals() {
   const currentDemTotal = totalDem + swingDem;
   const currentRepTotal = totalRep + swingRep;
 
+  const totalAssigned = currentDemTotal + currentRepTotal;
+
+  // Handle Overflows
+  if (totalAssigned > 538) {
+    alert("Total electoral votes exceed 538. Please adjust your assignments.");
+    return;
+  }
+
   // Update DOM
   document.getElementById('dem-total').innerText = currentDemTotal;
   document.getElementById('rep-total').innerText = currentRepTotal;
 
   // Update Electoral College Bar
   const totalVotes = 538;
-  const demPercentage = (currentDemTotal / totalVotes) * 100;
-  const repPercentage = (currentRepTotal / totalVotes) * 100;
+  const demPercentage = ((currentDemTotal / totalVotes) * 100).toFixed(1);
+  const repPercentage = ((currentRepTotal / totalVotes) * 100).toFixed(1);
 
-  document.getElementById('dem-bar').style.width = `${demPercentage}%`;
-  document.getElementById('rep-bar').style.width = `${repPercentage}%`;
+  const demBar = document.getElementById('dem-bar');
+  const repBar = document.getElementById('rep-bar');
 
-  // Optional: Handle cases where percentages exceed 100%
-  // This can occur if the static and swing votes do not sum to 538
+  demBar.style.width = `${demPercentage}%`;
+  repBar.style.width = `${repPercentage}%`;
+
+  // Update Percentage Labels
+  document.getElementById('dem-percentage').innerText = `${demPercentage}%`;
+  document.getElementById('rep-percentage').innerText = `${repPercentage}%`;
+
+  // Update Tooltips
+  demBar.setAttribute('data-tooltip', `Democrats: ${currentDemTotal} votes`);
+  repBar.setAttribute('data-tooltip', `Republicans: ${currentRepTotal} votes`);
+
+  // Update Winner Display
+  const winnerDisplay = document.getElementById('winner-display');
+  const winnerText = document.getElementById('winner-text');
+
+  if (currentDemTotal >= 270 && currentDemTotal > currentRepTotal) {
+    winnerDisplay.classList.remove('hidden');
+    winnerText.innerText = 'Winner: Democrats 🎉';
+  } else if (currentRepTotal >= 270 && currentRepTotal > currentDemTotal) {
+    winnerDisplay.classList.remove('hidden');
+    winnerText.innerText = 'Winner: Republicans 🎉';
+  } else {
+    winnerDisplay.classList.add('hidden');
+    winnerText.innerText = '';
+  }
+
+  // Victory Indicator
+  if (currentDemTotal >= 270 && currentDemTotal > currentRepTotal) {
+    demBar.classList.add('victory');
+    repBar.classList.remove('victory');
+  } else if (currentRepTotal >= 270 && currentRepTotal > currentDemTotal) {
+    repBar.classList.add('victory');
+    demBar.classList.remove('victory');
+  } else {
+    demBar.classList.remove('victory');
+    repBar.classList.remove('victory');
+  }
 }
 
 // Function to handle swing state click
@@ -135,8 +178,11 @@ function handleSwingStateClick(event) {
 function resetSwingStates() {
   swingStates.forEach(state => {
     state.assigned = null;
-    const stateElement = document.querySelector(`.swing-state:nth-child(${swingStates.indexOf(state) + 1})`);
-    stateElement.classList.remove('selected-dem', 'selected-rep');
+    const stateIndex = swingStates.indexOf(state) + 1;
+    const stateElement = document.querySelector(`.swing-state:nth-child(${stateIndex})`);
+    if (stateElement) {
+      stateElement.classList.remove('selected-dem', 'selected-rep');
+    }
   });
   updateTotals();
 }
