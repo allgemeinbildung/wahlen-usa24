@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>US-Präsidentschaftswahl 2024 Simulation</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        .state { margin-bottom: 10px; }
+        .results { margin-top: 20px; font-size: 1.2em; }
+        .winner { font-weight: bold; color: green; }
+        .loser { font-weight: bold; color: red; }
+    </style>
+</head>
+<body>
+
+<h1>US-Präsidentschaftswahl 2024 Simulation</h1>
+
+<div id="states">
+    <!-- Die Staaten werden hier dynamisch eingefügt -->
+</div>
+
+<div class="results">
+    <p>Republikaner: <span id="republicanVotes">0</span> Wahlleute</p>
+    <p>Demokraten: <span id="democratVotes">0</span> Wahlleute</p>
+    <p class="winner" id="winner"></p>
+</div>
+
+<script>
+    const states = [
+        { name: 'Pennsylvania', votes: 19 },
+        { name: 'Nevada', votes: 6 },
+        { name: 'Georgia', votes: 16 },
+        { name: 'Michigan', votes: 15 },
+        { name: 'North Carolina', votes: 16 },
+        { name: 'Arizona', votes: 11 },
+        { name: 'Wisconsin', votes: 10 },
+        { name: 'Florida', votes: 30 },
+        { name: 'Minnesota', votes: 10 },
+        { name: 'New Mexico', votes: 5 },
+        { name: 'Virginia', votes: 13 },
+        { name: 'New Hampshire', votes: 4 },
+    ];
+
+    // Standardmäßig zugeordnete Wahlleute der nicht umkämpften Staaten
+    const defaultDemocratVotes = 205;  // Passen Sie diesen Wert bei Bedarf an
+    const defaultRepublicanVotes = 178; // Passen Sie diesen Wert bei Bedarf an
+
+    const statesContainer = document.getElementById('states');
+    const republicanVotesEl = document.getElementById('republicanVotes');
+    const democratVotesEl = document.getElementById('democratVotes');
+    const winnerEl = document.getElementById('winner');
+
+    function createStateOption(state) {
+        const div = document.createElement('div');
+        div.className = 'state';
+
+        const label = document.createElement('label');
+        label.textContent = `${state.name} (${state.votes} Wahlleute): `;
+
+        const select = document.createElement('select');
+        select.innerHTML = `
+            <option value="none">Bitte wählen</option>
+            <option value="republican">Republikaner</option>
+            <option value="democrat">Demokraten</option>
+        `;
+
+        select.addEventListener('change', calculateResults);
+
+        div.appendChild(label);
+        div.appendChild(select);
+        statesContainer.appendChild(div);
+
+        state.selectElement = select; // Speichere das Element für späteren Zugriff
+    }
+
+    function calculateResults() {
+        let republicanTotal = defaultRepublicanVotes;
+        let democratTotal = defaultDemocratVotes;
+
+        states.forEach(state => {
+            const choice = state.selectElement.value;
+            if (choice === 'republican') {
+                republicanTotal += state.votes;
+            } else if (choice === 'democrat') {
+                democratTotal += state.votes;
+            }
+        });
+
+        republicanVotesEl.textContent = republicanTotal;
+        democratVotesEl.textContent = democratTotal;
+
+        if (republicanTotal >= 270 && republicanTotal > democratTotal) {
+            winnerEl.textContent = 'Aktueller Gewinner: Republikaner';
+            winnerEl.className = 'winner';
+        } else if (democratTotal >= 270 && democratTotal > republicanTotal) {
+            winnerEl.textContent = 'Aktueller Gewinner: Demokraten';
+            winnerEl.className = 'winner';
+        } else if (republicanTotal === democratTotal && republicanTotal >= 270) {
+            winnerEl.textContent = 'Unentschieden';
+            winnerEl.className = 'loser';
+        } else {
+            winnerEl.textContent = 'Noch kein Gewinner';
+            winnerEl.className = '';
+        }
+    }
+
+    states.forEach(createStateOption);
+
+    // Initiale Berechnung zur Anzeige der Standardwerte
+    calculateResults();
+</script>
+
+</body>
+</html>
