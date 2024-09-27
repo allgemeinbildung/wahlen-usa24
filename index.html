@@ -8,15 +8,8 @@
 <body>
     <h1>Wahlkarte der USA</h1>
     <div id="map-container">
-        <!-- Embedded SVG Map -->
-        <svg id="us-map" viewBox="0 0 165.92968 96.95461" xmlns="http://www.w3.org/2000/svg">
-            <!-- Example paths with IDs, names, and votes for states -->
-            <path id="state-PA" data-name="Pennsylvania" data-votes="19" d="..." class="state"/>
-            <path id="state-CA" data-name="California" data-votes="55" d="..." class="state"/>
-            <path id="state-TX" data-name="Texas" data-votes="38" d="..." class="state"/>
-            <path id="state-NY" data-name="New York" data-votes="29" d="..." class="state"/>
-            <!-- Continue for other states -->
-        </svg>
+        <!-- Reference to external SVG file -->
+        <object id="us-map" type="image/svg+xml" data="usa-labels-boxes.svg"></object>
     </div>
 
     <div id="results">
