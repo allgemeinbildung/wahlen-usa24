@@ -8,8 +8,20 @@
 <body>
     <h1>Wahlkarte der USA</h1>
     <div id="map-container">
-        <!-- Changed from object to img tag -->
-        <img id="us-map" src="usa-labels-boxes.svg" alt="USA Map">
+        <!-- Inline SVG -->
+        <svg id="us-map" xmlns="http://www.w3.org/2000/svg" viewBox="...">
+            <!-- Example for Pennsylvania -->
+            <path
+                class="state"
+                id="state-PA"
+                data-name="Pennsylvania"
+                data-votes="19"
+                style="fill:#d3d3d3;stroke:#ffffff;stroke-opacity:1;fill-opacity:1;stroke-width:0.75;stroke-miterlimit:4;stroke-dasharray:none"
+                d="M ... z"
+            />
+            <!-- Repeat for other interactive states -->
+            <!-- Add other non-interactive states as needed -->
+        </svg>
     </div>
     <div id="results">
         <p>Republikaner Stimmen: <span id="republicanVotes">0</span></p>
