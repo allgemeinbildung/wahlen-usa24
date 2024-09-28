@@ -27,6 +27,8 @@
 
     main {
       padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
     }
 
     section {
@@ -36,61 +38,16 @@
     h2, h3 {
       border-bottom: 2px solid #333;
       padding-bottom: 10px;
-    }
-
-    /* Electoral College Layout */
-    #electoral-college {
-      display: flex;
-      justify-content: space-between;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-
-    .column {
-      flex: 1;
-      min-width: 250px;
-      background-color: #fff;
-      border-radius: 5px;
-      padding: 15px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
-    .state-container {
-      min-height: 300px;
-      border: 2px dashed #ccc;
-      border-radius: 5px;
-      padding: 10px;
-      margin-top: 10px;
-    }
-
-    /* State Styling */
-    .state {
-      padding: 10px 15px;
-      margin: 5px 0;
-      border-radius: 5px;
-      cursor: move;
-      user-select: none;
-      transition: background-color 0.3s;
-    }
-
-    #dem-container .state {
-      background-color: #d1e7dd;
-      border: 1px solid #0f5132;
-    }
-
-    #rep-container .state {
-      background-color: #f8d7da;
-      border: 1px solid #842029;
-    }
-
-    #swing-container .state {
-      background-color: #fff3cd;
-      border: 1px solid #664d03;
+      margin-bottom: 20px;
     }
 
     /* Results Section */
     #results {
-      text-align: center;
+      background-color: #fff;
+      border-radius: 5px;
+      padding: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
     }
 
     .totals-container {
@@ -109,8 +66,8 @@
     }
 
     #results-chart {
-      max-width: 400px;
-      margin: 0 auto;
+      max-width: 500px;
+      margin: 0 auto 20px auto;
     }
 
     /* Winner Display */
@@ -130,7 +87,8 @@
 
     /* Reset Button */
     #reset-button {
-      margin-top: 20px;
+      display: block;
+      margin: 20px auto 0 auto;
       padding: 10px 20px;
       background-color: #0d6efd;
       color: white;
@@ -138,14 +96,87 @@
       border-radius: 5px;
       cursor: pointer;
       transition: background-color 0.3s;
+      font-size: 1em;
     }
 
     #reset-button:hover {
       background-color: #0b5ed7;
     }
 
+    /* Electoral College Layout */
+    #electoral-college {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .column {
+      flex: 1;
+      min-width: 250px;
+      background-color: #fff;
+      border-radius: 5px;
+      padding: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .column h2 {
+      text-align: center;
+    }
+
+    .state-container {
+      min-height: 300px;
+      border: 2px dashed #ccc;
+      border-radius: 5px;
+      padding: 10px;
+      margin-top: 10px;
+      overflow-y: auto;
+    }
+
+    /* State Styling */
+    .state {
+      padding: 8px 12px;
+      margin: 5px 0;
+      border-radius: 5px;
+      cursor: grab;
+      user-select: none;
+      transition: background-color 0.3s, transform 0.2s;
+      font-size: 0.9em;
+    }
+
+    .state:active {
+      cursor: grabbing;
+      transform: scale(1.02);
+    }
+
+    #dem-container .state {
+      background-color: #d1e7dd;
+      border: 1px solid #0f5132;
+    }
+
+    #rep-container .state {
+      background-color: #f8d7da;
+      border: 1px solid #842029;
+    }
+
+    #swing-container .state {
+      background-color: #fff3cd;
+      border: 1px solid #664d03;
+    }
+
+    /* Visual Feedback on Drag Over */
+    .state-container.drag-over {
+      background-color: #e2e6ea;
+      border-color: #999;
+    }
+
     /* Responsive Design */
     @media (max-width: 800px) {
+      .totals-container {
+        flex-direction: column;
+        align-items: center;
+      }
+
       #electoral-college {
         flex-direction: column;
       }
@@ -158,6 +189,22 @@
   </header>
 
   <main>
+    <section id="results">
+      <h2>Electoral College Results</h2>
+      <div class="totals-container">
+        <div class="total dem">Democrats: <span id="dem-total">0</span></div>
+        <div class="total rep">Republicans: <span id="rep-total">0</span></div>
+      </div>
+
+      <canvas id="results-chart"></canvas>
+
+      <div id="winner-display" class="winner-display hidden">
+        <h3 id="winner-text"></h3>
+      </div>
+
+      <button id="reset-button">Reset Swing States</button>
+    </section>
+
     <section id="electoral-college">
       <div class="column" id="democrat-states">
         <h2>Democratic States</h2>
@@ -177,22 +224,6 @@
           <!-- States will be populated here -->
         </div>
       </div>
-    </section>
-
-    <section id="results">
-      <h2>Electoral College Results</h2>
-      <div class="totals-container">
-        <div class="total dem">Democrats: <span id="dem-total">0</span></div>
-        <div class="total rep">Republicans: <span id="rep-total">0</span></div>
-      </div>
-
-      <canvas id="results-chart"></canvas>
-
-      <div id="winner-display" class="winner-display hidden">
-        <h3 id="winner-text"></h3>
-      </div>
-
-      <button id="reset-button">Reset Swing States</button>
     </section>
   </main>
 
@@ -240,17 +271,25 @@
       containers.forEach(container => {
         container.addEventListener('dragover', dragOver);
         container.addEventListener('drop', drop);
+        container.addEventListener('dragleave', dragLeave);
       });
     }
 
-    function createStateElement(state, votes) {
+    function createStateElement(state, votes, isDraggable) {
       console.log(`Creating state element: ${state} (${votes})`);
       const stateElement = document.createElement('div');
       stateElement.className = 'state';
       stateElement.textContent = `${state} (${votes})`;
-      stateElement.draggable = true;
-      stateElement.addEventListener('dragstart', dragStart);
-      stateElement.addEventListener('dragend', dragEnd);
+
+      if (isDraggable) {
+        stateElement.draggable = true;
+        stateElement.addEventListener('dragstart', dragStart);
+        stateElement.addEventListener('dragend', dragEnd);
+      } else {
+        // For non-draggable states, change cursor and disable dragging
+        stateElement.style.cursor = 'default';
+      }
+
       return stateElement;
     }
 
@@ -266,15 +305,15 @@
       swingContainer.innerHTML = '';
 
       for (const [state, votes] of Object.entries(staticVotes.dem)) {
-        demContainer.appendChild(createStateElement(state, votes));
+        demContainer.appendChild(createStateElement(state, votes, false));
       }
 
       for (const [state, votes] of Object.entries(staticVotes.rep)) {
-        repContainer.appendChild(createStateElement(state, votes));
+        repContainer.appendChild(createStateElement(state, votes, false));
       }
 
       for (const state of swingStates) {
-        swingContainer.appendChild(createStateElement(state.name, state.votes));
+        swingContainer.appendChild(createStateElement(state.name, state.votes, true));
       }
     }
 
@@ -294,12 +333,18 @@
 
     function dragOver(e) {
       e.preventDefault();
-      // Optional: Add visual feedback
-      e.currentTarget.style.backgroundColor = '#e2e6ea';
+      if (draggedElement) {
+        e.currentTarget.classList.add('drag-over');
+      }
+    }
+
+    function dragLeave(e) {
+      e.currentTarget.classList.remove('drag-over');
     }
 
     function drop(e) {
       e.preventDefault();
+      e.currentTarget.classList.remove('drag-over');
       const data = e.dataTransfer.getData('text');
       console.log(`Dropped data: ${data}`);
 
@@ -309,10 +354,6 @@
         } else if (e.target.classList.contains('state')) {
           e.target.parentNode.insertBefore(draggedElement, e.target.nextSibling);
         }
-        // Reset background color
-        document.querySelectorAll('.state-container').forEach(container => {
-          container.style.backgroundColor = '';
-        });
         updateColors();
         updateResults();
       }
