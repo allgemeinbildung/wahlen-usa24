@@ -17,30 +17,30 @@
       padding: 0;
       background-color: #f4f4f4;
     }
-
+    
     header, footer {
       background-color: #333;
       color: #fff;
       padding: 1em 0;
       text-align: center;
     }
-
+    
     main {
       padding: 20px;
       max-width: 1200px;
       margin: 0 auto;
     }
-
+    
     section {
       margin-bottom: 30px;
     }
-
+    
     h2, h3 {
       border-bottom: 2px solid #333;
       padding-bottom: 10px;
       margin-bottom: 20px;
     }
-
+    
     /* Results Section */
     #results {
       background-color: #fff;
@@ -49,42 +49,43 @@
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
       margin-bottom: 30px;
     }
-
+    
     .totals-container {
       display: flex;
       justify-content: space-around;
       font-size: 1.2em;
       margin-bottom: 20px;
+      flex-wrap: wrap;
     }
-
+    
     .total.dem {
-      color: blue;
+      color: #0d6efd; /* Updated to Bootstrap's primary blue */
     }
-
+    
     .total.rep {
       color: #842029;
     }
-
+    
     #results-chart {
       max-width: 500px;
       margin: 0 auto 20px auto;
     }
-
+    
     /* Winner Display */
     .winner-display {
       margin-top: 20px;
     }
-
+    
     .winner-display.hidden {
       display: none;
     }
-
+    
     .winner-display h3 {
       color: gold;
       font-size: 1.5em;
       text-shadow: 2px 2px 4px #000;
     }
-
+    
     /* Reset Button */
     #reset-button {
       display: block;
@@ -98,11 +99,11 @@
       transition: background-color 0.3s;
       font-size: 1em;
     }
-
+    
     #reset-button:hover {
       background-color: #0b5ed7;
     }
-
+    
     /* Electoral College Layout */
     #electoral-college {
       display: flex;
@@ -110,7 +111,7 @@
       gap: 20px;
       flex-wrap: wrap;
     }
-
+    
     .column {
       flex: 1;
       min-width: 250px;
@@ -119,11 +120,11 @@
       padding: 15px;
       box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
-
+    
     .column h2 {
       text-align: center;
     }
-
+    
     .state-container {
       min-height: 300px;
       border: 2px dashed #ccc;
@@ -132,7 +133,7 @@
       margin-top: 10px;
       overflow-y: auto;
     }
-
+    
     /* State Styling */
     .state {
       padding: 8px 12px;
@@ -143,40 +144,40 @@
       transition: background-color 0.3s, transform 0.2s;
       font-size: 0.9em;
     }
-
+    
     .state:active {
       cursor: grabbing;
       transform: scale(1.02);
     }
-
+    
     #dem-container .state {
-      background-color: #d1e7dd;
-      border: 1px solid #0f5132;
+      background-color: #cce5ff; /* Light blue */
+      border: 1px solid #004085; /* Dark blue */
     }
-
+    
     #rep-container .state {
       background-color: #f8d7da;
       border: 1px solid #842029;
     }
-
+    
     #swing-container .state {
       background-color: #fff3cd;
       border: 1px solid #664d03;
     }
-
+    
     /* Visual Feedback on Drag Over */
     .state-container.drag-over {
       background-color: #e2e6ea;
       border-color: #999;
     }
-
+    
     /* Responsive Design */
     @media (max-width: 800px) {
       .totals-container {
         flex-direction: column;
         align-items: center;
       }
-
+      
       #electoral-college {
         flex-direction: column;
       }
@@ -187,24 +188,25 @@
   <header>
     <h1>Wahlmänner-Simulator</h1>
   </header>
-
+  
   <main>
     <section id="results">
       <h2>Ergebnisse</h2>
       <div class="totals-container">
         <div class="total dem">Demokraten: <span id="dem-total">0</span></div>
         <div class="total rep">Republikaner: <span id="rep-total">0</span></div>
+        <div class="total swing">Unzugewiesen: <span id="swing-total">0</span></div>
       </div>
-
+      
       <canvas id="results-chart"></canvas>
-
+      
       <div id="winner-display" class="winner-display hidden">
         <h3 id="winner-text"></h3>
       </div>
-
+      
       <button id="reset-button">Reset Swing States</button>
     </section>
-
+    
     <section id="electoral-college">
       <div class="column" id="democrat-states">
         <h2>Eher Demokraten</h2>
@@ -226,11 +228,11 @@
       </div>
     </section>
   </main>
-
+  
   <footer>
     <p>&copy; 2024 Wahlmänner-Simulator</p>
   </footer>
-
+  
   <!-- Embedded JavaScript -->
   <script>
     // Static electoral votes
@@ -251,7 +253,7 @@
         'West Virginia': 4,
       }
     };
-
+    
     // Swing states data
     const swingStates = [
       { name: 'Pennsylvania', votes: 19 }, { name: 'Nevada', votes: 6 },
@@ -261,10 +263,10 @@
       { name: 'Minnesota', votes: 10 }, { name: 'New Mexico', votes: 5 },
       { name: 'Virginia', votes: 13 }, { name: 'New Hampshire', votes: 4 },
     ];
-
+    
     let chart;
     let draggedElement = null; // To keep track of the dragged element
-
+    
     function initializeDragAndDrop() {
       console.log('Initializing drag and drop');
       const containers = document.querySelectorAll('.state-container');
@@ -274,13 +276,13 @@
         container.addEventListener('dragleave', dragLeave);
       });
     }
-
+    
     function createStateElement(state, votes, isDraggable) {
       console.log(`Creating state element: ${state} (${votes})`);
       const stateElement = document.createElement('div');
       stateElement.className = 'state';
       stateElement.textContent = `${state} (${votes})`;
-
+      
       if (isDraggable) {
         stateElement.draggable = true;
         stateElement.addEventListener('dragstart', dragStart);
@@ -289,34 +291,34 @@
         // For non-draggable states, change cursor and disable dragging
         stateElement.style.cursor = 'default';
       }
-
+      
       return stateElement;
     }
-
+    
     function populateStates() {
       console.log('Populating states');
       const demContainer = document.getElementById('dem-container');
       const repContainer = document.getElementById('rep-container');
       const swingContainer = document.getElementById('swing-container');
-
+      
       // Clear default content
       demContainer.innerHTML = '';
       repContainer.innerHTML = '';
       swingContainer.innerHTML = '';
-
+      
       for (const [state, votes] of Object.entries(staticVotes.dem)) {
         demContainer.appendChild(createStateElement(state, votes, false));
       }
-
+      
       for (const [state, votes] of Object.entries(staticVotes.rep)) {
         repContainer.appendChild(createStateElement(state, votes, false));
       }
-
+      
       for (const state of swingStates) {
         swingContainer.appendChild(createStateElement(state.name, state.votes, true));
       }
     }
-
+    
     function dragStart(e) {
       draggedElement = e.target;
       e.dataTransfer.setData('text/plain', e.target.textContent);
@@ -324,47 +326,47 @@
       e.target.classList.add('dragging');
       console.log(`Dragging: ${e.target.textContent}`);
     }
-
+    
     function dragEnd(e) {
       // Remove the dragging class
       e.target.classList.remove('dragging');
       draggedElement = null;
     }
-
+    
     function dragOver(e) {
       e.preventDefault();
       if (draggedElement) {
         e.currentTarget.classList.add('drag-over');
       }
     }
-
+    
     function dragLeave(e) {
       e.currentTarget.classList.remove('drag-over');
     }
-
+    
     function drop(e) {
       e.preventDefault();
       e.currentTarget.classList.remove('drag-over');
       const data = e.dataTransfer.getData('text');
       console.log(`Dropped data: ${data}`);
-
+      
       if (draggedElement) {
-        if (e.target.classList.contains('state-container')) {
-          e.target.appendChild(draggedElement);
-        } else if (e.target.classList.contains('state')) {
+        if (e.currentTarget.classList.contains('state-container')) {
+          e.currentTarget.appendChild(draggedElement);
+        } else if (e.currentTarget.classList.contains('state')) {
           e.target.parentNode.insertBefore(draggedElement, e.target.nextSibling);
         }
         updateColors();
         updateResults();
       }
     }
-
+    
     function updateColors() {
       document.querySelectorAll('.state').forEach(state => {
         const container = state.parentElement;
         if (container.id === 'dem-container') {
-          state.style.backgroundColor = '#d1e7dd';
-          state.style.borderColor = '#0f5132';
+          state.style.backgroundColor = '#cce5ff'; /* Light blue */
+          state.style.borderColor = '#004085'; /* Dark blue */
         } else if (container.id === 'rep-container') {
           state.style.backgroundColor = '#f8d7da';
           state.style.borderColor = '#842029';
@@ -374,42 +376,48 @@
         }
       });
     }
-
+    
     function updateResults() {
       console.log('Updating results');
       let demTotal = 0;
       let repTotal = 0;
-
+      let swingTotal = 0;
+      
       document.querySelectorAll('#dem-container .state').forEach(state => {
         demTotal += parseInt(state.textContent.match(/\d+/)[0]);
       });
-
+      
       document.querySelectorAll('#rep-container .state').forEach(state => {
         repTotal += parseInt(state.textContent.match(/\d+/)[0]);
       });
-
+      
+      document.querySelectorAll('#swing-container .state').forEach(state => {
+        swingTotal += parseInt(state.textContent.match(/\d+/)[0]);
+      });
+      
       document.getElementById('dem-total').textContent = demTotal;
       document.getElementById('rep-total').textContent = repTotal;
-
-      updateChart(demTotal, repTotal);
+      document.getElementById('swing-total').textContent = swingTotal;
+      
+      updateChart(demTotal, repTotal, swingTotal);
       updateWinnerDisplay(demTotal, repTotal);
     }
-
-    function updateChart(demTotal, repTotal) {
-      console.log(`Updating chart: Dem ${demTotal}, Rep ${repTotal}`);
+    
+    function updateChart(demTotal, repTotal, swingTotal) {
+      console.log(`Updating chart: Dem ${demTotal}, Rep ${repTotal}, Swing ${swingTotal}`);
       const ctx = document.getElementById('results-chart').getContext('2d');
-
+      
       if (chart) {
         chart.destroy();
       }
-
+      
       chart = new Chart(ctx, {
         type: 'pie',
         data: {
-          labels: ['Demokraten', 'Republikaner'],
+          labels: ['Demokraten', 'Republikaner', 'Unzugewiesen'],
           datasets: [{
-            data: [demTotal, repTotal],
-            backgroundColor: ['#0f5132', '#842029'],
+            data: [demTotal, repTotal, swingTotal],
+            backgroundColor: ['#0d6efd', '#842029', '#ffc107'], // Blue, Red, Yellow
           }]
         },
         options: {
@@ -426,23 +434,23 @@
         }
       });
     }
-
+    
     function updateWinnerDisplay(demTotal, repTotal) {
       const winnerDisplay = document.getElementById('winner-display');
       const winnerText = document.getElementById('winner-text');
-
+      
       if (demTotal >= 270 && demTotal > repTotal) {
         winnerDisplay.classList.remove('hidden');
         winnerText.innerText = 'Sieger: Demokraten 🎉';
       } else if (repTotal >= 270 && repTotal > demTotal) {
         winnerDisplay.classList.remove('hidden');
-        winnerText.innerText = 'Sieger: Repubblikaner 🎉';
+        winnerText.innerText = 'Sieger: Republikaner 🎉';
       } else {
         winnerDisplay.classList.add('hidden');
         winnerText.innerText = '';
       }
     }
-
+    
     function resetSwingStates() {
       const swingContainer = document.getElementById('swing-container');
       document.querySelectorAll('#dem-container .state, #rep-container .state').forEach(state => {
@@ -455,19 +463,19 @@
       updateColors();
       updateResults();
     }
-
+    
     function init() {
       console.log('Initializing application');
       populateStates();
       initializeDragAndDrop();
       updateResults();
-
+      
       const resetButton = document.getElementById('reset-button');
       if (resetButton) {
         resetButton.addEventListener('click', resetSwingStates);
       }
     }
-
+    
     window.onload = init;
   </script>
 </body>
