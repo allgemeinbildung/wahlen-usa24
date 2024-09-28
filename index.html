@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Electoral College Simulator</title>
+  <title>Wahlmänner-Simulator</title>
   
   <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -185,15 +185,15 @@
 </head>
 <body>
   <header>
-    <h1>Electoral College Simulator</h1>
+    <h1>Wahlmänner-Simulator</h1>
   </header>
 
   <main>
     <section id="results">
-      <h2>Electoral College Results</h2>
+      <h2>Ergebnisse</h2>
       <div class="totals-container">
-        <div class="total dem">Democrats: <span id="dem-total">0</span></div>
-        <div class="total rep">Republicans: <span id="rep-total">0</span></div>
+        <div class="total dem">Demokraten: <span id="dem-total">0</span></div>
+        <div class="total rep">Republikaner: <span id="rep-total">0</span></div>
       </div>
 
       <canvas id="results-chart"></canvas>
@@ -207,7 +207,7 @@
 
     <section id="electoral-college">
       <div class="column" id="democrat-states">
-        <h2>Democratic States</h2>
+        <h2>Eher Demokraten</h2>
         <div class="state-container" id="dem-container">
           <!-- States will be populated here -->
         </div>
@@ -219,7 +219,7 @@
         </div>
       </div>
       <div class="column" id="republican-states">
-        <h2>Republican States</h2>
+        <h2>Eher Republikaner</h2>
         <div class="state-container" id="rep-container">
           <!-- States will be populated here -->
         </div>
@@ -228,7 +228,7 @@
   </main>
 
   <footer>
-    <p>&copy; 2024 Electoral College Simulator</p>
+    <p>&copy; 2024 Wahlmänner-Simulator</p>
   </footer>
 
   <!-- Embedded JavaScript -->
@@ -406,7 +406,7 @@
       chart = new Chart(ctx, {
         type: 'pie',
         data: {
-          labels: ['Democrats', 'Republicans'],
+          labels: ['Demokraten', 'Republikaner'],
           datasets: [{
             data: [demTotal, repTotal],
             backgroundColor: ['#0f5132', '#842029'],
