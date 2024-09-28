@@ -30,6 +30,7 @@ const swingStates = [
 let chart;
 
 function initializeDragAndDrop() {
+  console.log('Initializing drag and drop');
   const containers = document.querySelectorAll('.state-container');
   containers.forEach(container => {
     container.addEventListener('dragover', dragOver);
@@ -38,6 +39,7 @@ function initializeDragAndDrop() {
 }
 
 function createStateElement(state, votes) {
+  console.log(`Creating state element: ${state} (${votes})`);
   const stateElement = document.createElement('div');
   stateElement.className = 'state';
   stateElement.textContent = `${state} (${votes})`;
@@ -47,9 +49,15 @@ function createStateElement(state, votes) {
 }
 
 function populateStates() {
+  console.log('Populating states');
   const demContainer = document.getElementById('dem-container');
   const repContainer = document.getElementById('rep-container');
   const swingContainer = document.getElementById('swing-container');
+
+  // Clear default content
+  demContainer.innerHTML = '';
+  repContainer.innerHTML = '';
+  swingContainer.innerHTML = '';
 
   for (const [state, votes] of Object.entries(staticVotes.dem)) {
     demContainer.appendChild(createStateElement(state, votes));
@@ -63,6 +71,7 @@ function populateStates() {
     swingContainer.appendChild(createStateElement(state.name, state.votes));
   }
 }
+
 
 function dragStart(e) {
   e.dataTransfer.setData('text/plain', e.target.textContent);
@@ -104,6 +113,7 @@ function updateColors() {
 }
 
 function updateResults() {
+  console.log('Updating results');
   let demTotal = 0;
   let repTotal = 0;
 
@@ -123,6 +133,7 @@ function updateResults() {
 }
 
 function updateChart(demTotal, repTotal) {
+  console.log(`Updating chart: Dem ${demTotal}, Rep ${repTotal}`);
   const ctx = document.getElementById('results-chart').getContext('2d');
   
   if (chart) {
@@ -153,6 +164,7 @@ function updateChart(demTotal, repTotal) {
   });
 }
 
+
 function updateWinnerDisplay(demTotal, repTotal) {
   const winnerDisplay = document.getElementById('winner-display');
   const winnerText = document.getElementById('winner-text');
@@ -182,6 +194,7 @@ function resetSwingStates() {
 }
 
 function init() {
+  console.log('Initializing application');
   populateStates();
   initializeDragAndDrop();
   updateResults();
@@ -193,3 +206,4 @@ function init() {
 }
 
 window.onload = init;
+
