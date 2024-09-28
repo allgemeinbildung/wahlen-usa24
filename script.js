@@ -1,217 +1,195 @@
 // Static electoral votes
 const staticVotes = {
   dem: {
-    // Democratic static states and their electoral votes
-    'California': 55,
-    'New York': 29,
-    'Illinois': 20,
-    'Massachusetts': 11,
-    'Maryland': 10,
-    'Washington': 12,
-    'Oregon': 7,
-    'New Jersey': 14,
-    'Connecticut': 7,
-    'Rhode Island': 4,
-    'Delaware': 3,
-    'Vermont': 3,
-    'Hawaii': 4,
-    'District of Columbia': 3,
-    'Colorado': 10,
-    'Virginia': 13,
-    'Minnesota': 10,
+    'California': 55, 'New York': 29, 'Illinois': 20, 'Massachusetts': 11,
+    'Maryland': 10, 'Washington': 12, 'Oregon': 7, 'New Jersey': 14,
+    'Connecticut': 7, 'Rhode Island': 4, 'Delaware': 3, 'Vermont': 3,
+    'Hawaii': 4, 'District of Columbia': 3, 'Colorado': 10,
+    'Virginia': 13, 'Minnesota': 10,
   },
   rep: {
-    // Republican static states and their electoral votes
-    'Texas': 38,
-    'Ohio': 18,
-    'Indiana': 11,
-    'Tennessee': 11,
-    'Alabama': 9,
-    'Missouri': 10,
-    'Kentucky': 8,
-    'Oklahoma': 7,
-    'Utah': 6,
-    'Kansas': 6,
-    'Nebraska': 5,
-    'Idaho': 4,
-    'Wyoming': 3,
-    'South Carolina': 9,
-    'Louisiana': 8,
-    'Alaska': 3,
-    'Mississippi': 6,
-    'Iowa': 6,
-    'North Dakota': 3,
-    'South Dakota': 3,
-    'Montana': 4,
-    'Arkansas': 6,
+    'Texas': 38, 'Ohio': 18, 'Indiana': 11, 'Tennessee': 11, 'Alabama': 9,
+    'Missouri': 10, 'Kentucky': 8, 'Oklahoma': 7, 'Utah': 6, 'Kansas': 6,
+    'Nebraska': 5, 'Idaho': 4, 'Wyoming': 3, 'South Carolina': 9,
+    'Louisiana': 8, 'Alaska': 3, 'Mississippi': 6, 'Iowa': 6,
+    'North Dakota': 3, 'South Dakota': 3, 'Montana': 4, 'Arkansas': 6,
     'West Virginia': 4,
-    // Add other Republican static states if any
   }
 };
 
 // Swing states data
 const swingStates = [
-  { name: 'Pennsylvania', votes: 19, assigned: null },
-  { name: 'Nevada', votes: 6, assigned: null },
-  { name: 'Georgia', votes: 16, assigned: null },
-  { name: 'Michigan', votes: 15, assigned: null },
-  { name: 'North Carolina', votes: 16, assigned: null },
-  { name: 'Arizona', votes: 11, assigned: null },
-  { name: 'Wisconsin', votes: 10, assigned: null },
-  { name: 'Florida', votes: 30, assigned: null },
-  { name: 'Minnesota', votes: 10, assigned: null },
-  { name: 'New Mexico', votes: 5, assigned: null },
-  { name: 'Virginia', votes: 13, assigned: null },
-  { name: 'New Hampshire', votes: 4, assigned: null },
+  { name: 'Pennsylvania', votes: 19 }, { name: 'Nevada', votes: 6 },
+  { name: 'Georgia', votes: 16 }, { name: 'Michigan', votes: 15 },
+  { name: 'North Carolina', votes: 16 }, { name: 'Arizona', votes: 11 },
+  { name: 'Wisconsin', votes: 10 }, { name: 'Florida', votes: 30 },
+  { name: 'Minnesota', votes: 10 }, { name: 'New Mexico', votes: 5 },
+  { name: 'Virginia', votes: 13 }, { name: 'New Hampshire', votes: 4 },
 ];
 
-// Initialize totals
-let totalDem = 0;
-let totalRep = 0;
+let chart;
 
-// Function to calculate static totals
-function calculateStaticTotals() {
-  totalDem = 0;
-  totalRep = 0;
-  for (let state in staticVotes.dem) {
-    totalDem += staticVotes.dem[state];
+function initializeDragAndDrop() {
+  const containers = document.querySelectorAll('.state-container');
+  containers.forEach(container => {
+    container.addEventListener('dragover', dragOver);
+    container.addEventListener('drop', drop);
+  });
+}
+
+function createStateElement(state, votes) {
+  const stateElement = document.createElement('div');
+  stateElement.className = 'state';
+  stateElement.textContent = `${state} (${votes})`;
+  stateElement.draggable = true;
+  stateElement.addEventListener('dragstart', dragStart);
+  return stateElement;
+}
+
+function populateStates() {
+  const demContainer = document.getElementById('dem-container');
+  const repContainer = document.getElementById('rep-container');
+  const swingContainer = document.getElementById('swing-container');
+
+  for (const [state, votes] of Object.entries(staticVotes.dem)) {
+    demContainer.appendChild(createStateElement(state, votes));
   }
-  for (let state in staticVotes.rep) {
-    totalRep += staticVotes.rep[state];
+
+  for (const [state, votes] of Object.entries(staticVotes.rep)) {
+    repContainer.appendChild(createStateElement(state, votes));
+  }
+
+  for (const state of swingStates) {
+    swingContainer.appendChild(createStateElement(state.name, state.votes));
   }
 }
 
-// Function to update totals and the electoral college bar
-function updateTotals() {
-  // Reset swing totals
-  let swingDem = 0;
-  let swingRep = 0;
+function dragStart(e) {
+  e.dataTransfer.setData('text/plain', e.target.textContent);
+}
 
-  swingStates.forEach(state => {
-    if (state.assigned === 'dem') {
-      swingDem += state.votes;
-    } else if (state.assigned === 'rep') {
-      swingRep += state.votes;
+function dragOver(e) {
+  e.preventDefault();
+}
+
+function drop(e) {
+  e.preventDefault();
+  const data = e.dataTransfer.getData('text');
+  const draggedElement = document.querySelector(`.state:not(.dragging)`);
+  
+  if (e.target.classList.contains('state-container')) {
+    e.target.appendChild(draggedElement);
+  } else if (e.target.classList.contains('state')) {
+    e.target.parentNode.insertBefore(draggedElement, e.target.nextSibling);
+  }
+  
+  updateColors();
+  updateResults();
+}
+
+function updateColors() {
+  document.querySelectorAll('.state').forEach(state => {
+    const container = state.parentElement;
+    if (container.id === 'dem-container') {
+      state.style.backgroundColor = '#d1e7dd';
+      state.style.borderColor = '#0f5132';
+    } else if (container.id === 'rep-container') {
+      state.style.backgroundColor = '#f8d7da';
+      state.style.borderColor = '#842029';
+    } else {
+      state.style.backgroundColor = '#fff3cd';
+      state.style.borderColor = '#664d03';
     }
   });
+}
 
-  // Calculate total votes
-  const currentDemTotal = totalDem + swingDem;
-  const currentRepTotal = totalRep + swingRep;
+function updateResults() {
+  let demTotal = 0;
+  let repTotal = 0;
 
-  const totalAssigned = currentDemTotal + currentRepTotal;
+  document.querySelectorAll('#dem-container .state').forEach(state => {
+    demTotal += parseInt(state.textContent.match(/\d+/)[0]);
+  });
 
-  // Handle Overflows
-  if (totalAssigned > 538) {
-    alert("Total electoral votes exceed 538. Please adjust your assignments.");
-    return;
+  document.querySelectorAll('#rep-container .state').forEach(state => {
+    repTotal += parseInt(state.textContent.match(/\d+/)[0]);
+  });
+
+  document.getElementById('dem-total').textContent = demTotal;
+  document.getElementById('rep-total').textContent = repTotal;
+
+  updateChart(demTotal, repTotal);
+  updateWinnerDisplay(demTotal, repTotal);
+}
+
+function updateChart(demTotal, repTotal) {
+  const ctx = document.getElementById('results-chart').getContext('2d');
+  
+  if (chart) {
+    chart.destroy();
   }
 
-  // Update DOM
-  document.getElementById('dem-total').innerText = currentDemTotal;
-  document.getElementById('rep-total').innerText = currentRepTotal;
+  chart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+      labels: ['Democrats', 'Republicans'],
+      datasets: [{
+        data: [demTotal, repTotal],
+        backgroundColor: ['#0f5132', '#842029'],
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom',
+        },
+        title: {
+          display: true,
+          text: 'Electoral College Results'
+        }
+      }
+    }
+  });
+}
 
-  // Update Electoral College Bar
-  const totalVotes = 538;
-  const demPercentage = ((currentDemTotal / totalVotes) * 100).toFixed(1);
-  const repPercentage = ((currentRepTotal / totalVotes) * 100).toFixed(1);
-
-  const demBar = document.getElementById('dem-bar');
-  const repBar = document.getElementById('rep-bar');
-
-  demBar.style.width = `${demPercentage}%`;
-  repBar.style.width = `${repPercentage}%`;
-
-  // Update Percentage Labels
-  document.getElementById('dem-percentage').innerText = `${demPercentage}%`;
-  document.getElementById('rep-percentage').innerText = `${repPercentage}%`;
-
-  // Update Tooltips
-  demBar.setAttribute('data-tooltip', `Democrats: ${currentDemTotal} votes`);
-  repBar.setAttribute('data-tooltip', `Republicans: ${currentRepTotal} votes`);
-
-  // Update Winner Display
+function updateWinnerDisplay(demTotal, repTotal) {
   const winnerDisplay = document.getElementById('winner-display');
   const winnerText = document.getElementById('winner-text');
 
-  if (currentDemTotal >= 270 && currentDemTotal > currentRepTotal) {
+  if (demTotal >= 270 && demTotal > repTotal) {
     winnerDisplay.classList.remove('hidden');
     winnerText.innerText = 'Winner: Democrats 🎉';
-  } else if (currentRepTotal >= 270 && currentRepTotal > currentDemTotal) {
+  } else if (repTotal >= 270 && repTotal > demTotal) {
     winnerDisplay.classList.remove('hidden');
     winnerText.innerText = 'Winner: Republicans 🎉';
   } else {
     winnerDisplay.classList.add('hidden');
     winnerText.innerText = '';
   }
-
-  // Victory Indicator
-  if (currentDemTotal >= 270 && currentDemTotal > currentRepTotal) {
-    demBar.classList.add('victory');
-    repBar.classList.remove('victory');
-  } else if (currentRepTotal >= 270 && currentRepTotal > currentDemTotal) {
-    repBar.classList.add('victory');
-    demBar.classList.remove('victory');
-  } else {
-    demBar.classList.remove('victory');
-    repBar.classList.remove('victory');
-  }
 }
 
-// Function to handle swing state click
-function handleSwingStateClick(event) {
-  const stateElement = event.target;
-  const stateName = stateElement.textContent.split(' (')[0];
-  const state = swingStates.find(s => s.name === stateName);
-
-  if (!state) return;
-
-  // Toggle assignment
-  if (state.assigned === 'dem') {
-    state.assigned = 'rep';
-    stateElement.classList.remove('selected-dem');
-    stateElement.classList.add('selected-rep');
-  } else if (state.assigned === 'rep') {
-    state.assigned = null;
-    stateElement.classList.remove('selected-rep');
-  } else {
-    state.assigned = 'dem';
-    stateElement.classList.add('selected-dem');
-  }
-
-  updateTotals();
-}
-
-// Function to reset all swing states
 function resetSwingStates() {
-  swingStates.forEach(state => {
-    state.assigned = null;
-    const stateIndex = swingStates.indexOf(state) + 1;
-    const stateElement = document.querySelector(`.swing-state:nth-child(${stateIndex})`);
-    if (stateElement) {
-      stateElement.classList.remove('selected-dem', 'selected-rep');
+  const swingContainer = document.getElementById('swing-container');
+  document.querySelectorAll('#dem-container .state, #rep-container .state').forEach(state => {
+    if (!Object.keys(staticVotes.dem).includes(state.textContent.split(' ')[0]) &&
+        !Object.keys(staticVotes.rep).includes(state.textContent.split(' ')[0])) {
+      swingContainer.appendChild(state);
     }
   });
-  updateTotals();
+  updateColors();
+  updateResults();
 }
 
-// Initialize the application
 function init() {
-  calculateStaticTotals();
-  updateTotals();
+  populateStates();
+  initializeDragAndDrop();
+  updateResults();
 
-  // Add event listeners to swing states
-  const swingElements = document.querySelectorAll('.swing-state');
-  swingElements.forEach(element => {
-    element.addEventListener('click', handleSwingStateClick);
-  });
-
-  // Add event listener to reset button
   const resetButton = document.getElementById('reset-button');
   if (resetButton) {
     resetButton.addEventListener('click', resetSwingStates);
   }
 }
 
-// Run init on page load
 window.onload = init;
