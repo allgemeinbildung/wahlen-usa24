@@ -4,8 +4,153 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Electoral College Simulator</title>
-  <link rel="stylesheet" href="styles.css">
+  
+  <!-- Chart.js CDN -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- Embedded CSS -->
+  <style>
+    /* General Styles */
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+
+    header, footer {
+      background-color: #333;
+      color: #fff;
+      padding: 1em 0;
+      text-align: center;
+    }
+
+    main {
+      padding: 20px;
+    }
+
+    section {
+      margin-bottom: 30px;
+    }
+
+    h2, h3 {
+      border-bottom: 2px solid #333;
+      padding-bottom: 10px;
+    }
+
+    /* Electoral College Layout */
+    #electoral-college {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .column {
+      flex: 1;
+      min-width: 250px;
+      background-color: #fff;
+      border-radius: 5px;
+      padding: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .state-container {
+      min-height: 300px;
+      border: 2px dashed #ccc;
+      border-radius: 5px;
+      padding: 10px;
+      margin-top: 10px;
+    }
+
+    /* State Styling */
+    .state {
+      padding: 10px 15px;
+      margin: 5px 0;
+      border-radius: 5px;
+      cursor: move;
+      user-select: none;
+      transition: background-color 0.3s;
+    }
+
+    #dem-container .state {
+      background-color: #d1e7dd;
+      border: 1px solid #0f5132;
+    }
+
+    #rep-container .state {
+      background-color: #f8d7da;
+      border: 1px solid #842029;
+    }
+
+    #swing-container .state {
+      background-color: #fff3cd;
+      border: 1px solid #664d03;
+    }
+
+    /* Results Section */
+    #results {
+      text-align: center;
+    }
+
+    .totals-container {
+      display: flex;
+      justify-content: space-around;
+      font-size: 1.2em;
+      margin-bottom: 20px;
+    }
+
+    .total.dem {
+      color: #0f5132;
+    }
+
+    .total.rep {
+      color: #842029;
+    }
+
+    #results-chart {
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    /* Winner Display */
+    .winner-display {
+      margin-top: 20px;
+    }
+
+    .winner-display.hidden {
+      display: none;
+    }
+
+    .winner-display h3 {
+      color: gold;
+      font-size: 1.5em;
+      text-shadow: 2px 2px 4px #000;
+    }
+
+    /* Reset Button */
+    #reset-button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #0d6efd;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    #reset-button:hover {
+      background-color: #0b5ed7;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 800px) {
+      #electoral-college {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -17,19 +162,19 @@
       <div class="column" id="democrat-states">
         <h2>Democratic States</h2>
         <div class="state-container" id="dem-container">
-          <div class="state">Default Dem State (10)</div>
+          <!-- States will be populated here -->
         </div>
       </div>
       <div class="column" id="swing-states">
         <h2>Swing States</h2>
         <div class="state-container" id="swing-container">
-          <div class="state">Default Swing State (10)</div>
+          <!-- Swing States will be populated here -->
         </div>
       </div>
       <div class="column" id="republican-states">
         <h2>Republican States</h2>
         <div class="state-container" id="rep-container">
-          <div class="state">Default Rep State (10)</div>
+          <!-- States will be populated here -->
         </div>
       </div>
     </section>
@@ -40,13 +185,13 @@
         <div class="total dem">Democrats: <span id="dem-total">0</span></div>
         <div class="total rep">Republicans: <span id="rep-total">0</span></div>
       </div>
-      
+
       <canvas id="results-chart"></canvas>
 
       <div id="winner-display" class="winner-display hidden">
         <h3 id="winner-text"></h3>
       </div>
-      
+
       <button id="reset-button">Reset Swing States</button>
     </section>
   </main>
@@ -55,6 +200,234 @@
     <p>&copy; 2024 Electoral College Simulator</p>
   </footer>
 
-  <script src="script.js"></script>
+  <!-- Embedded JavaScript -->
+  <script>
+    // Static electoral votes
+    const staticVotes = {
+      dem: {
+        'California': 55, 'New York': 29, 'Illinois': 20, 'Massachusetts': 11,
+        'Maryland': 10, 'Washington': 12, 'Oregon': 7, 'New Jersey': 14,
+        'Connecticut': 7, 'Rhode Island': 4, 'Delaware': 3, 'Vermont': 3,
+        'Hawaii': 4, 'District of Columbia': 3, 'Colorado': 10,
+        'Virginia': 13, 'Minnesota': 10,
+      },
+      rep: {
+        'Texas': 38, 'Ohio': 18, 'Indiana': 11, 'Tennessee': 11, 'Alabama': 9,
+        'Missouri': 10, 'Kentucky': 8, 'Oklahoma': 7, 'Utah': 6, 'Kansas': 6,
+        'Nebraska': 5, 'Idaho': 4, 'Wyoming': 3, 'South Carolina': 9,
+        'Louisiana': 8, 'Alaska': 3, 'Mississippi': 6, 'Iowa': 6,
+        'North Dakota': 3, 'South Dakota': 3, 'Montana': 4, 'Arkansas': 6,
+        'West Virginia': 4,
+      }
+    };
+
+    // Swing states data
+    const swingStates = [
+      { name: 'Pennsylvania', votes: 19 }, { name: 'Nevada', votes: 6 },
+      { name: 'Georgia', votes: 16 }, { name: 'Michigan', votes: 15 },
+      { name: 'North Carolina', votes: 16 }, { name: 'Arizona', votes: 11 },
+      { name: 'Wisconsin', votes: 10 }, { name: 'Florida', votes: 30 },
+      { name: 'Minnesota', votes: 10 }, { name: 'New Mexico', votes: 5 },
+      { name: 'Virginia', votes: 13 }, { name: 'New Hampshire', votes: 4 },
+    ];
+
+    let chart;
+    let draggedElement = null; // To keep track of the dragged element
+
+    function initializeDragAndDrop() {
+      console.log('Initializing drag and drop');
+      const containers = document.querySelectorAll('.state-container');
+      containers.forEach(container => {
+        container.addEventListener('dragover', dragOver);
+        container.addEventListener('drop', drop);
+      });
+    }
+
+    function createStateElement(state, votes) {
+      console.log(`Creating state element: ${state} (${votes})`);
+      const stateElement = document.createElement('div');
+      stateElement.className = 'state';
+      stateElement.textContent = `${state} (${votes})`;
+      stateElement.draggable = true;
+      stateElement.addEventListener('dragstart', dragStart);
+      stateElement.addEventListener('dragend', dragEnd);
+      return stateElement;
+    }
+
+    function populateStates() {
+      console.log('Populating states');
+      const demContainer = document.getElementById('dem-container');
+      const repContainer = document.getElementById('rep-container');
+      const swingContainer = document.getElementById('swing-container');
+
+      // Clear default content
+      demContainer.innerHTML = '';
+      repContainer.innerHTML = '';
+      swingContainer.innerHTML = '';
+
+      for (const [state, votes] of Object.entries(staticVotes.dem)) {
+        demContainer.appendChild(createStateElement(state, votes));
+      }
+
+      for (const [state, votes] of Object.entries(staticVotes.rep)) {
+        repContainer.appendChild(createStateElement(state, votes));
+      }
+
+      for (const state of swingStates) {
+        swingContainer.appendChild(createStateElement(state.name, state.votes));
+      }
+    }
+
+    function dragStart(e) {
+      draggedElement = e.target;
+      e.dataTransfer.setData('text/plain', e.target.textContent);
+      // Optional: Add a class to style the dragged element
+      e.target.classList.add('dragging');
+      console.log(`Dragging: ${e.target.textContent}`);
+    }
+
+    function dragEnd(e) {
+      // Remove the dragging class
+      e.target.classList.remove('dragging');
+      draggedElement = null;
+    }
+
+    function dragOver(e) {
+      e.preventDefault();
+      // Optional: Add visual feedback
+      e.currentTarget.style.backgroundColor = '#e2e6ea';
+    }
+
+    function drop(e) {
+      e.preventDefault();
+      const data = e.dataTransfer.getData('text');
+      console.log(`Dropped data: ${data}`);
+
+      if (draggedElement) {
+        if (e.target.classList.contains('state-container')) {
+          e.target.appendChild(draggedElement);
+        } else if (e.target.classList.contains('state')) {
+          e.target.parentNode.insertBefore(draggedElement, e.target.nextSibling);
+        }
+        // Reset background color
+        document.querySelectorAll('.state-container').forEach(container => {
+          container.style.backgroundColor = '';
+        });
+        updateColors();
+        updateResults();
+      }
+    }
+
+    function updateColors() {
+      document.querySelectorAll('.state').forEach(state => {
+        const container = state.parentElement;
+        if (container.id === 'dem-container') {
+          state.style.backgroundColor = '#d1e7dd';
+          state.style.borderColor = '#0f5132';
+        } else if (container.id === 'rep-container') {
+          state.style.backgroundColor = '#f8d7da';
+          state.style.borderColor = '#842029';
+        } else {
+          state.style.backgroundColor = '#fff3cd';
+          state.style.borderColor = '#664d03';
+        }
+      });
+    }
+
+    function updateResults() {
+      console.log('Updating results');
+      let demTotal = 0;
+      let repTotal = 0;
+
+      document.querySelectorAll('#dem-container .state').forEach(state => {
+        demTotal += parseInt(state.textContent.match(/\d+/)[0]);
+      });
+
+      document.querySelectorAll('#rep-container .state').forEach(state => {
+        repTotal += parseInt(state.textContent.match(/\d+/)[0]);
+      });
+
+      document.getElementById('dem-total').textContent = demTotal;
+      document.getElementById('rep-total').textContent = repTotal;
+
+      updateChart(demTotal, repTotal);
+      updateWinnerDisplay(demTotal, repTotal);
+    }
+
+    function updateChart(demTotal, repTotal) {
+      console.log(`Updating chart: Dem ${demTotal}, Rep ${repTotal}`);
+      const ctx = document.getElementById('results-chart').getContext('2d');
+
+      if (chart) {
+        chart.destroy();
+      }
+
+      chart = new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: ['Democrats', 'Republicans'],
+          datasets: [{
+            data: [demTotal, repTotal],
+            backgroundColor: ['#0f5132', '#842029'],
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom',
+            },
+            title: {
+              display: true,
+              text: 'Electoral College Results'
+            }
+          }
+        }
+      });
+    }
+
+    function updateWinnerDisplay(demTotal, repTotal) {
+      const winnerDisplay = document.getElementById('winner-display');
+      const winnerText = document.getElementById('winner-text');
+
+      if (demTotal >= 270 && demTotal > repTotal) {
+        winnerDisplay.classList.remove('hidden');
+        winnerText.innerText = 'Winner: Democrats 🎉';
+      } else if (repTotal >= 270 && repTotal > demTotal) {
+        winnerDisplay.classList.remove('hidden');
+        winnerText.innerText = 'Winner: Republicans 🎉';
+      } else {
+        winnerDisplay.classList.add('hidden');
+        winnerText.innerText = '';
+      }
+    }
+
+    function resetSwingStates() {
+      const swingContainer = document.getElementById('swing-container');
+      document.querySelectorAll('#dem-container .state, #rep-container .state').forEach(state => {
+        const stateName = state.textContent.split(' (')[0];
+        if (!Object.keys(staticVotes.dem).includes(stateName) &&
+            !Object.keys(staticVotes.rep).includes(stateName)) {
+          swingContainer.appendChild(state);
+        }
+      });
+      updateColors();
+      updateResults();
+    }
+
+    function init() {
+      console.log('Initializing application');
+      populateStates();
+      initializeDragAndDrop();
+      updateResults();
+
+      const resetButton = document.getElementById('reset-button');
+      if (resetButton) {
+        resetButton.addEventListener('click', resetSwingStates);
+      }
+    }
+
+    window.onload = init;
+  </script>
 </body>
 </html>
