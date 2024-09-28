@@ -195,7 +195,7 @@
       <div class="totals-container">
         <div class="total dem">Demokraten: <span id="dem-total">0</span></div>
         <div class="total rep">Republikaner: <span id="rep-total">0</span></div>
-        <div class="total swing">Unzugewiesen: <span id="swing-total">0</span></div>
+        <div class="total swing">Swing States: <span id="swing-total">0</span></div>
       </div>
       
       <canvas id="results-chart"></canvas>
@@ -414,7 +414,7 @@
       chart = new Chart(ctx, {
         type: 'pie',
         data: {
-          labels: ['Demokraten', 'Republikaner', 'Unzugewiesen'],
+          labels: ['Demokraten', 'Republikaner', 'Swing States'],
           datasets: [{
             data: [demTotal, repTotal, swingTotal],
             backgroundColor: ['#0d6efd', '#842029', '#ffc107'], // Blue, Red, Yellow
