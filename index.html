@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Electoral College Simulator</title>
   <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <header>
@@ -12,240 +13,30 @@
   </header>
 
   <main>
-    <!-- Static States Section -->
-    <section id="static-states">
-      <h2>Static States</h2>
-      <div class="tables-container">
-        <!-- Democratic States Table -->
-        <div class="table-wrapper">
-          <h3>Democratic States</h3>
-          <table class="states-table dem-table">
-            <thead>
-              <tr>
-                <th>State</th>
-                <th>Electoral Votes</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>California</td>
-                <td>55</td>
-              </tr>
-              <tr>
-                <td>New York</td>
-                <td>29</td>
-              </tr>
-              <tr>
-                <td>Illinois</td>
-                <td>20</td>
-              </tr>
-              <tr>
-                <td>Massachusetts</td>
-                <td>11</td>
-              </tr>
-              <tr>
-                <td>Maryland</td>
-                <td>10</td>
-              </tr>
-              <tr>
-                <td>Washington</td>
-                <td>12</td>
-              </tr>
-              <tr>
-                <td>Oregon</td>
-                <td>7</td>
-              </tr>
-              <tr>
-                <td>New Jersey</td>
-                <td>14</td>
-              </tr>
-              <tr>
-                <td>Connecticut</td>
-                <td>7</td>
-              </tr>
-              <tr>
-                <td>Rhode Island</td>
-                <td>4</td>
-              </tr>
-              <tr>
-                <td>Delaware</td>
-                <td>3</td>
-              </tr>
-              <tr>
-                <td>Vermont</td>
-                <td>3</td>
-              </tr>
-              <tr>
-                <td>Hawaii</td>
-                <td>4</td>
-              </tr>
-              <tr>
-                <td>District of Columbia</td>
-                <td>3</td>
-              </tr>
-              <tr>
-                <td>Colorado</td>
-                <td>10</td>
-              </tr>
-              <tr>
-                <td>Minnesota</td>
-                <td>10</td>
-              </tr>
-              <tr>
-                <td>Virginia</td>
-                <td>13</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Republican States Table -->
-        <div class="table-wrapper">
-          <h3>Republican States</h3>
-          <table class="states-table rep-table">
-            <thead>
-              <tr>
-                <th>State</th>
-                <th>Electoral Votes</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Texas</td>
-                <td>38</td>
-              </tr>
-              <tr>
-                <td>Ohio</td>
-                <td>18</td>
-              </tr>
-              <tr>
-                <td>Indiana</td>
-                <td>11</td>
-              </tr>
-              <tr>
-                <td>Tennessee</td>
-                <td>11</td>
-              </tr>
-              <tr>
-                <td>Alabama</td>
-                <td>9</td>
-              </tr>
-              <tr>
-                <td>Missouri</td>
-                <td>10</td>
-              </tr>
-              <tr>
-                <td>Kentucky</td>
-                <td>8</td>
-              </tr>
-              <tr>
-                <td>Oklahoma</td>
-                <td>7</td>
-              </tr>
-              <tr>
-                <td>Utah</td>
-                <td>6</td>
-              </tr>
-              <tr>
-                <td>Kansas</td>
-                <td>6</td>
-              </tr>
-              <tr>
-                <td>Nebraska</td>
-                <td>5</td>
-              </tr>
-              <tr>
-                <td>Idaho</td>
-                <td>4</td>
-              </tr>
-              <tr>
-                <td>Wyoming</td>
-                <td>3</td>
-              </tr>
-              <tr>
-                <td>South Carolina</td>
-                <td>9</td>
-              </tr>
-              <tr>
-                <td>Louisiana</td>
-                <td>8</td>
-              </tr>
-              <tr>
-                <td>Alaska</td>
-                <td>3</td>
-              </tr>
-              <tr>
-                <td>Mississippi</td>
-                <td>6</td>
-              </tr>
-              <tr>
-                <td>Iowa</td>
-                <td>6</td>
-              </tr>
-              <tr>
-                <td>North Dakota</td>
-                <td>3</td>
-              </tr>
-              <tr>
-                <td>South Dakota</td>
-                <td>3</td>
-              </tr>
-              <tr>
-                <td>Montana</td>
-                <td>4</td>
-              </tr>
-              <tr>
-                <td>Arkansas</td>
-                <td>6</td>
-              </tr>
-              <tr>
-                <td>West Virginia</td>
-                <td>4</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+    <section id="electoral-college">
+      <div class="column" id="democrat-states">
+        <h2>Democratic States</h2>
+        <div class="state-container" id="dem-container"></div>
+      </div>
+      <div class="column" id="swing-states">
+        <h2>Swing States</h2>
+        <div class="state-container" id="swing-container"></div>
+      </div>
+      <div class="column" id="republican-states">
+        <h2>Republican States</h2>
+        <div class="state-container" id="rep-container"></div>
       </div>
     </section>
 
-    <!-- Swing States Section -->
-    <section id="swing-states">
-      <h2>Swing States</h2>
-      <div class="state-list">
-        <div class="swing-state" data-votes="19">Pennsylvania (19)</div>
-        <div class="swing-state" data-votes="6">Nevada (6)</div>
-        <div class="swing-state" data-votes="16">Georgia (16)</div>
-        <div class="swing-state" data-votes="15">Michigan (15)</div>
-        <div class="swing-state" data-votes="16">North Carolina (16)</div>
-        <div class="swing-state" data-votes="11">Arizona (11)</div>
-        <div class="swing-state" data-votes="10">Wisconsin (10)</div>
-        <div class="swing-state" data-votes="30">Florida (30)</div>
-        <div class="swing-state" data-votes="10">Minnesota (10)</div>
-        <div class="swing-state" data-votes="5">New Mexico (5)</div>
-        <div class="swing-state" data-votes="13">Virginia (13)</div>
-        <div class="swing-state" data-votes="4">New Hampshire (4)</div>
-      </div>
-    </section>
-
-    <!-- Totals and Electoral College Bar Section -->
-    <section id="totals">
-      <h2>Electoral College Totals</h2>
+    <section id="results">
+      <h2>Electoral College Results</h2>
       <div class="totals-container">
         <div class="total dem">Democrats: <span id="dem-total">0</span></div>
         <div class="total rep">Republicans: <span id="rep-total">0</span></div>
       </div>
       
-      <!-- Electoral College Bar -->
-      <div id="electoral-college-bar">
-        <div id="dem-bar" class="bar dem-bar"></div>
-        <div id="rep-bar" class="bar rep-bar"></div>
-        <div id="bar-labels">
-          <span id="dem-percentage">0%</span>
-          <span id="rep-percentage">0%</span>
-        </div>
-      </div>
+      <canvas id="results-chart"></canvas>
 
-      <!-- Winner Display -->
       <div id="winner-display" class="winner-display hidden">
         <h3 id="winner-text"></h3>
       </div>
