@@ -59,11 +59,15 @@
     }
     
     .total.dem {
-      color: #0d6efd; /* Updated to Bootstrap's primary blue */
+      color: #0d6efd; /* Bootstrap's primary blue */
     }
     
     .total.rep {
       color: #842029;
+    }
+    
+    .total.swing {
+      color: #ffc107;
     }
     
     #results-chart {
@@ -238,19 +242,17 @@
     // Static electoral votes
     const staticVotes = {
       dem: {
-        'California': 55, 'New York': 29, 'Illinois': 20, 'Massachusetts': 11,
+        'California': 54, 'New York': 28, 'Illinois': 19, 'Massachusetts': 11,
         'Maryland': 10, 'Washington': 12, 'Oregon': 7, 'New Jersey': 14,
         'Connecticut': 7, 'Rhode Island': 4, 'Delaware': 3, 'Vermont': 3,
-        'Hawaii': 4, 'District of Columbia': 3, 'Colorado': 10,
-        'Virginia': 13, 'Minnesota': 10,
+        'Hawaii': 4, 'District of Columbia': 3, 'Colorado': 10
       },
       rep: {
-        'Texas': 38, 'Ohio': 18, 'Indiana': 11, 'Tennessee': 11, 'Alabama': 9,
-        'Missouri': 10, 'Kentucky': 8, 'Oklahoma': 7, 'Utah': 6, 'Kansas': 6,
-        'Nebraska': 5, 'Idaho': 4, 'Wyoming': 3, 'South Carolina': 9,
-        'Louisiana': 8, 'Alaska': 3, 'Mississippi': 6, 'Iowa': 6,
-        'North Dakota': 3, 'South Dakota': 3, 'Montana': 4, 'Arkansas': 6,
-        'West Virginia': 4,
+        'Texas': 40, 'Ohio': 17, 'Indiana': 11, 'Tennessee': 11, 'Alabama': 9, 
+        'Missouri': 10, 'Kentucky': 8, 'Oklahoma': 7, 'Utah': 6, 'Kansas': 6, 
+        'Nebraska': 5, 'Idaho': 4, 'Wyoming': 3, 'South Carolina': 9, 'Louisiana': 8, 
+        'Alaska': 3, 'Mississippi': 6, 'Iowa': 6, 'North Dakota': 3, 'South Dakota': 3, 
+        'Montana': 4, 'Arkansas': 6, 'West Virginia': 4
       }
     };
     
@@ -262,6 +264,7 @@
       { name: 'Wisconsin', votes: 10 }, { name: 'Florida', votes: 30 },
       { name: 'Minnesota', votes: 10 }, { name: 'New Mexico', votes: 5 },
       { name: 'Virginia', votes: 13 }, { name: 'New Hampshire', votes: 4 },
+      { name: 'Maine', votes: 4 } // Added Maine as a swing state
     ];
     
     let chart;
@@ -306,14 +309,17 @@
       repContainer.innerHTML = '';
       swingContainer.innerHTML = '';
       
+      // Populate Solid Democratic States
       for (const [state, votes] of Object.entries(staticVotes.dem)) {
         demContainer.appendChild(createStateElement(state, votes, false));
       }
       
+      // Populate Solid Republican States
       for (const [state, votes] of Object.entries(staticVotes.rep)) {
         repContainer.appendChild(createStateElement(state, votes, false));
       }
       
+      // Populate Swing States
       for (const state of swingStates) {
         swingContainer.appendChild(createStateElement(state.name, state.votes, true));
       }
